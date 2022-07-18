@@ -5,54 +5,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <ImageView
-        android:id="@+id/imageView_sample"
+
+    <VideoView
+        android:id="@+id/videoView_sample"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:src="@drawable/image_sample"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_height="0dp"
+        android:text="Video View!"
+        app:layout_constraintBottom_toTopOf="@id/button_start"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/button_save_bitmap"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
-        android:id="@+id/button_save_bitmap"
+        android:id="@+id/button_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Bitmap"
-        app:layout_constraintBottom_toTopOf="@id/button_take_photo_save_to_gallery"
+        android:text="Video start"
+        app:layout_constraintBottom_toTopOf="@id/button_take_video_save"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView_sample" />
+        app:layout_constraintTop_toBottomOf="@id/videoView_sample" />
 
     <Button
-        android:id="@+id/button_take_photo_save_to_gallery"
+        android:id="@+id/button_take_video_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Take Photo And Save To Gallery"
+        android:text="Take Video And Save"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/button_get_image_from_gallery"
-        app:layout_constraintTop_toBottomOf="@id/button_save_bitmap" />
+        app:layout_constraintBottom_toTopOf="@id/button_get_video"
+        app:layout_constraintTop_toBottomOf="@id/button_start" />
 
     <Button
-        android:id="@+id/button_get_image_from_gallery"
+        android:id="@+id/button_get_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Image From Gallery"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/imageView_image_from_gallery"
-        app:layout_constraintTop_toBottomOf="@id/button_take_photo_save_to_gallery" />
-
-    <ImageView
-        android:id="@+id/imageView_image_from_gallery"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:text="Get Video"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_get_image_from_gallery" />
+        app:layout_constraintTop_toBottomOf="@id/button_take_video_save" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

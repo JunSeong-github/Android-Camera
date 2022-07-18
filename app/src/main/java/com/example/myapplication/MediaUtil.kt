@@ -17,70 +17,69 @@ import androidx.core.content.FileProvider
 import java.io.File
 import java.io.OutputStream
 
-private const val IMAGE_JPEG_SUFFIX = ".jpg"
-private const val IMAGE_MIME_TYPE = "image/jpeg"
+private const val VIDEO_MP4_SUFFIX = ".mp4"
+private const val VIDEO_MIME_TYPE = "video/mp4"
 
 class MediaUtil {
 
     companion object {
-        fun Bitmap.saveToGallery(context: Context): Uri? {
-            val imageOutputStream: OutputStream
-
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    val resolver = context.contentResolver
-                    val contentValues = ContentValues()
-
-                    contentValues.apply {
-                        put(
-                            MediaStore.MediaColumns.DISPLAY_NAME,
-                            "${System.currentTimeMillis()}$IMAGE_JPEG_SUFFIX"
-                        )
-                        put(MediaStore.MediaColumns.MIME_TYPE, IMAGE_MIME_TYPE)
-                        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-                    }
-                    val imageUri =
-                        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                    imageOutputStream = resolver.openOutputStream(imageUri!!)!!
-                    imageOutputStream.use {
-                        this.compress(Bitmap.CompressFormat.JPEG, 100, it)
-                    }
-                    Toast.makeText(context, "Image saved to gallery", Toast.LENGTH_SHORT).show()
-
-                    return imageUri
-                } else {
-                    val imageUrl = MediaStore.Images.Media.insertImage(
-                        context.contentResolver,
-                        this,
-                        "${System.currentTimeMillis()}",
-                        "${context.applicationInfo.loadLabel(context.packageManager)}-image"
-                    )
-                    val savedImageUri = Uri.parse(imageUrl)
-
-                    Toast.makeText(context, "Image saved to gallery", Toast.LENGTH_SHORT).show()
-
-                    return savedImageUri
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(context, "Image not saved \n$e", Toast.LENGTH_SHORT).show()
-            }
-            return null
-        }
+//        fun Bitmap.saveToGallery(context: Context): Uri? {
+//            val imageOutputStream: OutputStream
+//
+//            try {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                    val resolver = context.contentResolver
+//                    val contentValues = ContentValues()
+//
+//                    contentValues.apply {
+//                        put(
+//                            MediaStore.MediaColumns.DISPLAY_NAME,
+//                            "${System.currentTimeMillis()}$IMAGE_JPEG_SUFFIX"
+//                        )
+//                        put(MediaStore.MediaColumns.MIME_TYPE, IMAGE_MIME_TYPE)
+//                        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+//                    }
+//                    val imageUri =
+//                        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+//                    imageOutputStream = resolver.openOutputStream(imageUri!!)!!
+//                    imageOutputStream.use {
+//                        this.compress(Bitmap.CompressFormat.JPEG, 100, it)
+//                    }
+//                    Toast.makeText(context, "Image saved to gallery", Toast.LENGTH_SHORT).show()
+//
+//                    return imageUri
+//                } else {
+//                    val imageUrl = MediaStore.Images.Media.insertImage(
+//                        context.contentResolver,
+//                        this,
+//                        "${System.currentTimeMillis()}",
+//                        "${context.applicationInfo.loadLabel(context.packageManager)}-image"
+//                    )
+//                    val savedImageUri = Uri.parse(imageUrl)
+//
+//                    Toast.makeText(context, "Image saved to gallery", Toast.LENGTH_SHORT).show()
+//
+//                    return savedImageUri
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                Toast.makeText(context, "Image not saved \n$e", Toast.LENGTH_SHORT).show()
+//            }
+//            return null
+//        }
 
         fun Context.getMediaUri(intent: Intent): Uri {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val contentValues = ContentValues().apply {
                     put(
                         MediaStore.MediaColumns.DISPLAY_NAME,
-                        "${System.currentTimeMillis()}$IMAGE_JPEG_SUFFIX"
+                        "${System.currentTimeMillis()}$VIDEO_MP4_SUFFIX"
                     )
-                    put(MediaStore.MediaColumns.MIME_TYPE, IMAGE_MIME_TYPE)
+                    put(MediaStore.MediaColumns.MIME_TYPE, VIDEO_MIME_TYPE)
                     put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
                 }
                 val uri = contentResolver.insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    contentValues
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues
                 )!!
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
 
@@ -93,7 +92,7 @@ class MediaUtil {
                 }
                 val file = File.createTempFile(
                     "${System.currentTimeMillis()}",
-                    IMAGE_JPEG_SUFFIX,
+                    VIDEO_MP4_SUFFIX,
                     directory
                 )
                 intent.putExtra(
@@ -107,36 +106,36 @@ class MediaUtil {
             }
         }
 
-        fun Context.scanMediaToBitmap(uri: Uri, action: (Bitmap) -> Unit) {
-            MediaScannerConnection.scanFile(this, arrayOf(uri.path), null) { _, _ ->
-                val bmp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(
-                        ImageDecoder.createSource(contentResolver, uri)
-                    )
-                } else {
-                    val originalBitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                    originalBitmap.rotateFromGalleryPreVersionP(this, uri)
-                }
-                action.invoke(bmp)
-            }
-        }
+//        fun Context.scanMediaToBitmap(uri: Uri, action: (Bitmap) -> Unit) {
+//            MediaScannerConnection.scanFile(this, arrayOf(uri.path), null) { _, _ ->
+//                val bmp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                    ImageDecoder.decodeBitmap(
+//                        ImageDecoder.createSource(contentResolver, uri)
+//                    )
+//                } else {
+//                    val originalBitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+//                    originalBitmap.rotateFromGalleryPreVersionP(this, uri)
+//                }
+//                action.invoke(bmp)
+//            }
+//        }
 
-        private fun Bitmap.rotateFromGalleryPreVersionP(context: Context, uri: Uri): Bitmap {
-            val path = context.getFilePath(uri)
-            return Bitmap.createBitmap(
-                this,
-                0,
-                0,
-                width,
-                height,
-                Matrix().apply {
-                    postRotate(
-                        calculateExif(path)
-                    )
-                },
-                false
-            )
-        }
+//        private fun Bitmap.rotateFromGalleryPreVersionP(context: Context, uri: Uri): Bitmap {
+//            val path = context.getFilePath(uri)
+//            return Bitmap.createBitmap(
+//                this,
+//                0,
+//                0,
+//                width,
+//                height,
+//                Matrix().apply {
+//                    postRotate(
+//                        calculateExif(path)
+//                    )
+//                },
+//                false
+//            )
+//        }
 
         private fun Context.getFilePath(uri: Uri): String {
             val cursor = contentResolver.query(uri, null, null, null, null)
@@ -156,18 +155,18 @@ class MediaUtil {
          * Mac의 경우 Orientation 해석이 다를 수 있어서 테스트 시 실기기를 사용해야함
          * https://stackoverflow.com/questions/39400351/android-exif-data-always-0-how-to-change-it/39567169
          */
-        private fun calculateExif(path: String): Float {
-            val attribute = ExifInterface(path).getAttributeInt(
-                ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_NORMAL
-            )
-            return when (attribute) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> 90f
-                ExifInterface.ORIENTATION_ROTATE_180 -> 180f
-                ExifInterface.ORIENTATION_ROTATE_270 -> 270f
-                else -> 0f
-            }
-        }
+//        private fun calculateExif(path: String): Float {
+//            val attribute = ExifInterface(path).getAttributeInt(
+//                ExifInterface.TAG_ORIENTATION,
+//                ExifInterface.ORIENTATION_NORMAL
+//            )
+//            return when (attribute) {
+//                ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+//                ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+//                ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+//                else -> 0f
+//            }
+//        }
 
     }
 

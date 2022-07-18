@@ -8,12 +8,12 @@ import android.provider.MediaStore
 import android.provider.MediaStore.EXTRA_OUTPUT
 import androidx.activity.result.contract.ActivityResultContract
 
-class FlexibleTakePicture : ActivityResultContract<Uri, Boolean>() {
+class FlexibleTakeVideo : ActivityResultContract<Uri, Boolean>() {
 
     private var intent: Intent? = null
 
     fun newIntent(): Intent {
-        val generatedIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val generatedIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         intent = generatedIntent
         return generatedIntent
     }
